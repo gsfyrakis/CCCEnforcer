@@ -1,0 +1,21 @@
+
+Policies for CCC enforcer
+-------------------------
+
+1. PI (Principal Investigator) has the right to upload RD to the RD repository after his registration to the repository.
+2. If the size of RD PI uploads is less than 10 MB.
+  (a) PI is prohibited to delete the RD.
+  (b) PI has right to update the lasted publication date of the RD he uploaded within 2 years. (2 min)
+  (c) PI gains the right to download the RD he uploaded.
+3. If the size of RD uploaded by PI is larger than 10 MB.
+  (a) PI is obliged to specify the raw data and tools for reproducing this RD. (within 2 hours) -> triggers an event (email)
+
+Actions
+-------
+
+- add more metadata to CCC response
+- examples of right, obligation, prohibition
+- how enforcers handles them
+- compare the 2 CCC versions - architecture, extra components
+- send screenshots with ropsets
+- add relative time for obligations to trigger an event in the CCC

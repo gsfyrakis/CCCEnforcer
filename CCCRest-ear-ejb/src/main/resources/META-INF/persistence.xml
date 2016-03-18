@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+             version="1.0">
+    <persistence-unit name="RopePU" transaction-type="JTA">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <jta-data-source>java:jboss/datasources/RopeDS</jta-data-source>
+        <!--jar-file>lib/CCCRest-ear-commons-7.1.1-SNAPSHOT.jar</jar-file-->
+        <class>uk.ac.ncl.model.Data</class>
+        <class>uk.ac.ncl.model.Tool</class>
+        <class>uk.ac.ncl.event.Event</class>
+        <class>uk.ac.ncl.rop.Right</class>
+        <class>uk.ac.ncl.rop.Obligation</class>
+        <class>uk.ac.ncl.rop.Prohibition</class>
+        <class>uk.ac.ncl.user.User</class>
+        <properties>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+            <!-- property name="hibernate.transaction.manager_lookup_class"
+                value=" org.hibernate.transaction.JBossTransactionManagerLookup" />
+            <property name="hibernate.hbm2ddl.auto" value="update" /-->
+            <property name="hibernate.show_sql" value="true"/>
+            <!--  property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="connection.autocommit" value="false" />
+            <property name="hibernate.transaction.factory_class"
+                value="org.hibernate.transaction.JTATransactionFactory" /-->
+            <!--  property name="hibernate.connection.release_mode" value="auto" />
+            <property name="com.arjuna.ats.jta.jtaTMImplementation"
+                value=" com.arjuna.ats.internal.jta.transaction.arjunacore.TransactionManagerImple" />
+            <property name="com.arjuna.ats.jta.jtaUTImplementatio"
+                value="com.arjuna.ats.internal.jta.transaction.arjunacore.UserTransactionImple" />
+            <property name="com.arjuna.ats.arjuna.recovery.recoveryExtension5"
+                value="com.arjuna.ats.internal.jta.recovery.arjunacore.XARecoveryModule" />
+            <property name="hibernate.transaction.jta.platform"
+                      value="org.hibernate.service.jta.platform.internal.JBossAppServerJtaPlatform" />
+            <property name="hibernate.ogm.datastore.provider"
+                      value="Infinispan" /-->
+        </properties>
+    </persistence-unit>
+
+</persistence>
