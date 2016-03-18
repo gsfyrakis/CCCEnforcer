@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	    http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-2.5.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <mvc:annotation-driven/>
+    <tx:annotation-driven/>
+    <context:component-scan base-package="uk.ac.ncl"/>
+
+    <!-- Resolves view names to protected .jsp resources within the /WEB-INF/views
+        directory -->
+    <bean
+            class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
+
+
+    <bean id="Deadline" class="uk.ac.ncl.core.Deadline"/>
+    <bean id="UserBo" class="uk.ac.ncl.userBo.UserBoImpl"/>
+    <bean id="UserManager" class="uk.ac.ncl.dao.UserManagerImpl"/>
+    <bean id="ToolBo" class="uk.ac.ncl.toolBo.ToolBoImpl"/>
+    <bean id="ToolManager" class="uk.ac.ncl.dao.ToolManagerImpl"/>
+    <bean id="DataBo" class="uk.ac.ncl.dataBo.DataBoImpl"/>
+    <bean id="DataManager" class="uk.ac.ncl.dao.DataManagerImpl"/>
+    <bean id="CCCEngine" class="uk.ac.ncl.core.CCCEngine"/>
+    <bean id="S3" class="uk.ac.ncl.amazon.S3"/>
+    <!-- bean id ="DataChecker" class="uk.ac.ncl.checker.DataCheckerImpl" / -->
+
+    <bean
+            class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+    <bean
+            class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor">
+        <property name="alwaysUseJndiLookup" value="true"/>
+    </bean>
+
+    <!-- bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="RopePU" /> </bean -->
+
+    <jee:jndi-lookup id="RopePU" jndi-name="persistence/RopePU"/>
+
+    <bean id="UserTransaction" class="org.jboss.tm.usertx.client.ServerVMClientUserTransaction"/>
+
+    <bean id="transactionManager"
+          class="org.springframework.transaction.jta.JtaTransactionManager"/>
+
+    <!-- bean id="scheduledTimerTask" class="org.springframework.scheduling.timer.ScheduledTimerTask">
+	    <property name="delay" value="30000"></property>
+	    <property name="timerTask" ref="Deadline"></property>
+	</bean>
+	
+	<bean class="org.springframework.scheduling.timer.TimerFactoryBean">
+	    <property name="scheduledTimerTasks">
+	        <list>
+	            <ref local="scheduledTimerTask"></ref>
+	        </list>
+	    </property>
+	</bean-->
+
+</beans>
