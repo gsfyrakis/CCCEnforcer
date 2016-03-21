@@ -130,11 +130,15 @@ public class DataController {
             String fileName = file.getOriginalFilename();
             String type = req.getParameter("type");
             String key = "uk/ac/ncl/ReseachDataRepository/" + fileName;
+
             Operation operation = new Operation(OperationName.upload, type, key);
             Event event = new Event(userName, operation);
+
             CCCResponse response = engine.run(event);
+
             Boolean verdict = response.getContractCompliant();
-            if (verdict) {
+            String resultMessage = response.getMessage();
+            if (verdict && resultMessage.equals("")) {
                 try {
                     ObjectMetadata meta = new ObjectMetadata();
                     long size = file.getSize();

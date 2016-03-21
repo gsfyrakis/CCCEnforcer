@@ -8,6 +8,9 @@ public class CCCResponse implements Serializable {
 
     private boolean isContractCompliant;
 
+
+    private String message = "";
+
     public CCCResponse(boolean isContractCompliant) {
         this.setContractCompliant(isContractCompliant);
     }
@@ -26,10 +29,17 @@ public class CCCResponse implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("CCCResponse [isContractCompliant=")
-                .append(isContractCompliant).append("]");
-        return builder.toString();
+        return  "<result>\n" +
+                "<contractcompliant>" + isContractCompliant +"</contractcompliant>\n" +
+                "<message>" + message + "</message>\n"+
+                " </result>";
     }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }

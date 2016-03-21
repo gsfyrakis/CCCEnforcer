@@ -7,13 +7,13 @@ package uk.ac.ncl.core;
 public class Responder {
     private Boolean isContractCompliant = false;
 
-    public Responder() {
+    private String message = "";
 
+    public Responder() {
     }
 
     public Responder(boolean contractCompliant) {
         this.isContractCompliant = contractCompliant;
-
     }
 
     public void setContractCompliant(Boolean isContractCompliant) {
@@ -22,7 +22,14 @@ public class Responder {
 
     public Boolean getContractCompliant() {
         return this.isContractCompliant;
+    }
 
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
 }
