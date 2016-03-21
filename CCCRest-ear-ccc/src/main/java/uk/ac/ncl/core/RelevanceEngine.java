@@ -145,7 +145,7 @@ public class RelevanceEngine {
         sconfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
 
 		/*
-		 * 
+         *
 		 * realtime: uses the system clock to determine the current time for
 		 * timestamps. pseudo: for testing temporal rules since it can be
 		 * controlled by the application.
@@ -193,7 +193,6 @@ public class RelevanceEngine {
     /**
      * Initialize contract.
      *
-     * @param timeKeeper the time keeper
      */
     public static void initializeContract() {
         if (workingMem != null) {
@@ -374,11 +373,9 @@ public class RelevanceEngine {
                 System.out.println("event object: " + ev.toString());
             }
 
-            if (ev.getOperation() !=null && ev.getOperation().getObject() !=null) {
-                System.out.println("data: " + ev.getOperation().getObject().toString());
+            if (ev.getOperation() != null && ev.getOperation().getObject() != null) {
+                System.out.println("data: " + ev.getOperation().getObject());
             }
-         //   DataChecker dc = new DataChecker() ;
-            String filesize = ev.getOperation().getObject();
 
             workingMem.insert(user);
             workingMem.insert(right);
@@ -394,24 +391,29 @@ public class RelevanceEngine {
         log.info("+ Processing event: " + ev.toString());
         // Fire all rules!
         try {
+
             workingMem.fireAllRules();
+            updateCCCResult();
 
-            // update response of CCC
-
-            if (responder != null) {
-                if (responder.getContractCompliant() == null) {
-                    setCCCResponse(new CCCResponse(false));
-                } else {
-                    setCCCResponse(new CCCResponse(
-                            responder.getContractCompliant()));
-                }
-            }
 
         } catch (Exception e) {
             ErrorMessageManager.errorMsg("Exception when firing rules", e);
             setCCCResponse(new CCCResponse(false));
+            cccResponse.setMessage("Exception when firing rules");
         }
 
+    }
+
+    private static void updateCCCResult() {
+        // update response of CCC
+        if (responder != null) {
+            if (responder.getContractCompliant() == null) {
+                setCCCResponse(new CCCResponse(false));
+            } else {
+                setCCCResponse(new CCCResponse(responder.getContractCompliant()));
+                cccResponse.setMessage(responder.getMessage());
+            }
+        }
     }
 
     /**
