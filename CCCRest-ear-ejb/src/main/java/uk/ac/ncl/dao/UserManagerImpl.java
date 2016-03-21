@@ -64,9 +64,12 @@ public class UserManagerImpl implements UserManager {
     public Obligation getObligation(User user, Operation operation) {
         Set<Obligation> userObligation = user.getObligationSet();
         for (Obligation obligation : userObligation) {
+            System.out.println("getObligation: obligation: " + obligation);
             Set<Operation> operationSet = obligation.getOperationSet();
             for (Operation result : operationSet) {
+                System.out.println("getObligation: operation: " + result);
                 if (result.contain(operation))
+                    System.out.println("getObligation: return obligation: " + obligation);
                     return obligation;
             }
         }
