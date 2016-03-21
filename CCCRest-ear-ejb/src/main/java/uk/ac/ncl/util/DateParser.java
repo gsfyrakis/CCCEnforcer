@@ -6,6 +6,7 @@ package uk.ac.ncl.util;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.Exchanger;
 
 /**
  * The Class DateParser.
@@ -19,6 +20,8 @@ public class DateParser {
     private static DateFormat df = DateFormat.getInstance(); // new
     // SimpleDateFormat("dd/MM/yyyy HH:mm:ss");//DateFormat.getInstance();
     private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+    private static SimpleDateFormat dftime = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
     private final static long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
 
@@ -43,6 +46,14 @@ public class DateParser {
         } catch (Exception e) {
             throw new IllegalArgumentException(
                     "String cannot be parsed as a date");
+        }
+    }
+
+    public static Date dateTimeParse(String d){
+        try {
+            return dftime.parse(d);
+        } catch (Exception e){
+            throw new IllegalArgumentException("String cannot be parsed as a date");
         }
     }
 
