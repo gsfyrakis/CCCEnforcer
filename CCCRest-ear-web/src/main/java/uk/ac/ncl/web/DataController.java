@@ -135,7 +135,7 @@ public class DataController {
             Event event = new Event(userName, operation);
 
             CCCResponse response = engine.run(event);
-
+            //Policy enforcement point (PEP)
             Boolean verdict = response.getContractCompliant();
             String resultMessage = response.getMessage();
             if (verdict && resultMessage.equals("")) {
