@@ -31,6 +31,7 @@ public class Obligation extends RopEntity<ObligationState> implements
                       ObligationState state, Date deadline) {
         super(name, operation, state);
         this.deadline = deadline;
+
     }
 
 
@@ -50,6 +51,11 @@ public class Obligation extends RopEntity<ObligationState> implements
         super(operation);
         this.deadline = deadline;
         this.state = ObligationState.imposed;
+    }
+
+    public Obligation(String name, Operation operation, Date deadline){
+        super(name, operation);
+        this.deadline = deadline;
     }
 
     @Override
