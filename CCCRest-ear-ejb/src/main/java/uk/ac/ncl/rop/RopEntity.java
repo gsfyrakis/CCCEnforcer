@@ -75,6 +75,13 @@ public class RopEntity<ropState extends RopState> implements Serializable {
         this.state = state;
     }
 
+    public RopEntity(String name, Operation operation){
+        this.name = name;
+        Set<Operation> operationSet = new HashSet<Operation>();
+        operationSet.add(operation);
+        this.operationSet = operationSet;
+    }
+
     public RopEntity(Operation operation) {
         this.name = operation.toString();
         Set<Operation> operationSet = new HashSet<Operation>();
