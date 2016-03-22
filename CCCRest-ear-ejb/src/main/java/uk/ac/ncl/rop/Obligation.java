@@ -4,13 +4,12 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import uk.ac.ncl.event.Operation;
 import uk.ac.ncl.state.RopState.ObligationState;
-import uk.ac.ncl.util.DateParser;
 
 @Entity
 @Table(name = "UserObligation")
@@ -20,7 +19,8 @@ public class Obligation extends RopEntity<ObligationState> implements
      *
      */
     private static final long serialVersionUID = -6075412688170777269L;
-
+    @Transient
+    private DeadlineInt dl;//= new DeadlineInt();
 
     public Obligation() {
         super();
@@ -41,6 +41,12 @@ public class Obligation extends RopEntity<ObligationState> implements
         this.deadline = deadline;
     }
 
+    public Obligation(String name, Set<Operation> operation, DeadlineInt deadlineInt) {
+        super(name, operation);
+        this.state = ObligationState.imposed;
+        this.dl = deadlineInt;
+    }
+
 
     public Obligation(Operation operation, ObligationState state, Date deadline) {
         super(operation, state);
@@ -53,7 +59,7 @@ public class Obligation extends RopEntity<ObligationState> implements
         this.state = ObligationState.imposed;
     }
 
-    public Obligation(String name, Operation operation, Date deadline){
+    public Obligation(String name, Operation operation, Date deadline) {
         super(name, operation);
         this.deadline = deadline;
     }
