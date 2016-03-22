@@ -66,17 +66,17 @@ public class ContractComplianceChecker {
      *
      * @param events the events
      */
-    public void startSimulation(List<Event> events) {
-        // Have the Relevance Engine do all the initialization bits
-        RelevanceEngine.initializeContract();
-        // Init event created and submitted
-        Event event = new Event();
-        logger.logEvent(event);
-        relevanceEngine.addEvent(event);
-        startFlag = true;
-        // Continue with rest of simulation
-        continueSimulation(events);
-    }
+//    public void startSimulation(List<Event> events) {
+//        // Have the Relevance Engine do all the initialization bits
+//        RelevanceEngine.initializeContract();
+//        // Init event created and submitted
+//        Event event = new Event();
+//        logger.logEvent(event);
+//        relevanceEngine.addEvent(event);
+//        startFlag = true;
+//        // Continue with rest of simulation
+//        continueSimulation(events);
+//    }
 
     /**
      * Initialize ccc.
