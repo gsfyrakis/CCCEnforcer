@@ -1,24 +1,26 @@
 package uk.ac.ncl.core;
 
-import java.util.Date;
-import java.util.TimerTask;
-import javax.ejb.Stateful;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.UserTransaction;
-
-import org.jboss.tm.usertx.client.ServerVMClientUserTransaction;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
+import uk.ac.ncl.event.Operation;
 import uk.ac.ncl.resource.Resources;
 import uk.ac.ncl.rop.DeadlineInt;
 import uk.ac.ncl.rop.RopEntity;
 import uk.ac.ncl.state.RopState;
+import uk.ac.ncl.user.User;
+
+import javax.ejb.Stateful;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
+import java.util.Date;
+import java.util.TimerTask;
 
 @Stateful
 @Transactional
-public class Deadline extends TimerTask implements DeadlineInt{
+public class Deadline extends TimerTask {
+    private  String expiryDate = null;
+    private  Operation operation;
     private Date deadline;
     private RopEntity<? extends RopState> rop;
 
@@ -50,8 +52,8 @@ public class Deadline extends TimerTask implements DeadlineInt{
 
     public Deadline(RopEntity<? extends RopState> rop) {
         this.rop = rop;
-        em = Resources.getEntityManager();
-        userTransaction = new ServerVMClientUserTransaction(com.arjuna.ats.jta.TransactionManager.transactionManager());
+//        em = Resources.getEntityManager();
+//        userTransaction = new ServerVMClientUserTransaction(com.arjuna.ats.jta.TransactionManager.transactionManager());
     }
 
     public Deadline(TimeKeeper timeKeeper, RopEntity rop, String originator, String responder, boolean b) {
@@ -67,6 +69,37 @@ public class Deadline extends TimerTask implements DeadlineInt{
         this.rop = rop;
         this.expiryFlag = true;
 
+    }
+
+    public Deadline(TimeKeeper timeKeeper, RopEntity rop, User user, String expiryDate) {
+        this.timeKeeper = timeKeeper;
+        this.rop = rop;
+        this.expiryDate = expiryDate;
+        
+    }
+
+    public Deadline(TimeKeeper timeKeeper, RopEntity rop, String originator, Date dl) {
+        this.timeKeeper = timeKeeper;
+        this.rop = rop;
+        this.deadline = dl;
+    }
+
+    public Deadline(TimeKeeper timeKeeper, RopEntity rop, String originator) {
+        this.timeKeeper = timeKeeper;
+        this.rop = rop;
+        this.expiryFlag = true;
+    }
+
+    public Deadline(TimeKeeper timeKeeper, Operation operation, String originator, Date dl) {
+        this.timeKeeper = timeKeeper;
+        this.operation = operation;
+        this.deadline = deadline;
+    }
+
+    public Deadline(TimeKeeper timeKeeper, Operation operation, String originator ) {
+        this.timeKeeper = timeKeeper;
+        this.operation = operation;
+        this.expiryFlag = true;
     }
 
     @Override

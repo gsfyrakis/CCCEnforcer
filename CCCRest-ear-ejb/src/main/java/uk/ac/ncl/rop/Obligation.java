@@ -20,7 +20,7 @@ public class Obligation extends RopEntity<ObligationState> implements
      */
     private static final long serialVersionUID = -6075412688170777269L;
     @Transient
-    private DeadlineInt dl;//= new DeadlineInt();
+    private DeadlineInt dl;//= new Deadline();
 
     public Obligation() {
         super();
@@ -63,6 +63,7 @@ public class Obligation extends RopEntity<ObligationState> implements
         super(name, operation);
         this.deadline = deadline;
     }
+
 
     @Override
     public String toString() {
