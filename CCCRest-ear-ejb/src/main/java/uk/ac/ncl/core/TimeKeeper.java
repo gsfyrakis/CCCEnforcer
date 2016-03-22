@@ -4,6 +4,7 @@
 package uk.ac.ncl.core;
 
 import uk.ac.ncl.event.Event;
+import uk.ac.ncl.event.Operation;
 import uk.ac.ncl.rop.Obligation;
 import uk.ac.ncl.rop.RopEntity;
 
@@ -48,33 +49,32 @@ public class TimeKeeper {
 	 *
 	 * @param rop the rop
 	 * @param originator the originator
-	 * @param responder the responder
 	 * @param dl the dl
 	 */
-	public void addDeadline(RopEntity rop, String originator, String responder, Date dl) {
+	public void addDeadline(RopEntity rop, Operation operation, String originator, Date dl) {
 		// Verify that arguments are acceptable
 		if (rop == null)
 			throw new IllegalArgumentException("RopEntity cannot be null in addDeadline()");
 		if ((originator == null) || (originator.length() == 0))
 			throw new IllegalArgumentException("Originator name cannot be null or empty in addDeadline()");
-		if ((responder == null) || (responder.length() == 0))
-			throw new IllegalArgumentException("Responder name cannot be null or empty in addDeadline()");
+//		if ((responder == null) || (responder.length() == 0))
+//			throw new IllegalArgumentException("Responder name cannot be null or empty in addDeadline()");
 		if (dl == null)
 			throw new IllegalArgumentException("Date for deadline cannot be null in addDeadline()");
 		// Create new Deadline object
 		Deadline deadline = null;
 		if (rop instanceof Obligation)
 			// Create a deadline for an expiry, not a timeout
-			deadline = new Deadline(this, rop, originator, responder, true);
+			deadline = new Deadline(this, rop, originator, dl);
 		else
 			// Create a deadline for a timeout
-			deadline = new Deadline(this, rop, originator, responder);
+			deadline = new Deadline(this, rop, originator);
 		// Create new Timer object
 		Timer timer = new Timer();
 		// And now schedule the deadline with it
 		timer.schedule(deadline, dl);
 		// And now build a key for it, and store it for retrieval!
-		String key = new String(rop.getName() + "-" + rop.getState() + "-" + rop.getDeadline() + "-");
+		String key = new String(rop.getName() + "-" + operation.getType() + "-" +  operation.getName());//dl.toString() + "-");
 		// +"-"+DateParser.format(dl)); Not possible to store the deadline
 		// easily outside of tk
 		timerMap.put(key, timer);
