@@ -1,17 +1,13 @@
 package uk.ac.ncl.userBo;
 
 import java.util.HashSet;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import uk.ac.ncl.dao.UserManager;
-import uk.ac.ncl.event.Operation;
-import uk.ac.ncl.event.Operation.OperationName;
 import uk.ac.ncl.rop.Obligation;
 import uk.ac.ncl.rop.Prohibition;
 import uk.ac.ncl.rop.Right;
-import uk.ac.ncl.state.RopState.RightState;
 import uk.ac.ncl.user.User;
 
 public class UserBoImpl implements UserBo {

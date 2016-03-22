@@ -17,7 +17,6 @@ import javax.persistence.Table;
 import uk.ac.ncl.rop.*;
 import uk.ac.ncl.state.RopState.ObligationState;
 import uk.ac.ncl.state.RopState.ProhibitionState;
-import uk.ac.ncl.state.RopState.RightState;
 
 @Entity
 @Table(name = "User")
@@ -41,8 +40,6 @@ public class User implements Serializable {
 
     @Column(name = "ROLE")
     private String role;
-
-    //@Column(name = "")
 
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
     private Set<Right> rightSet;
