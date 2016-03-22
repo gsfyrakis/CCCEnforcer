@@ -19,3 +19,6 @@ Actions
 - compare the 2 CCC versions - architecture, extra components
 - send screenshots with ropsets
 - add relative time for obligations to trigger an event in the CCC
+
+- no composite obligations
+- no separation of policy enforcement from policy decision mechanisms
