@@ -54,7 +54,7 @@ public class Event implements Serializable {
     @Column(name = "STATUS")
     private EventStatus status = EventStatus.unChecked;
 
-    public Event() {
+    public Event(String sequenceId, String originator, String responder, String name, String timeout, Date date) {
 
     }
 
