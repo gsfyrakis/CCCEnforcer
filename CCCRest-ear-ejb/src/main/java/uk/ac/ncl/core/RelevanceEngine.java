@@ -1,10 +1,8 @@
 package uk.ac.ncl.core;
 
-import java.io.*;
-import java.util.*;
-import java.util.logging.Logger;
-
-import org.drools.*;
+import org.drools.KnowledgeBase;
+import org.drools.KnowledgeBaseConfiguration;
+import org.drools.KnowledgeBaseFactory;
 import org.drools.agent.KnowledgeAgent;
 import org.drools.agent.KnowledgeAgentConfiguration;
 import org.drools.agent.KnowledgeAgentFactory;
@@ -12,7 +10,7 @@ import org.drools.builder.KnowledgeBuilder;
 import org.drools.builder.KnowledgeBuilderErrors;
 import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
-import org.drools.compiler.*;
+import org.drools.compiler.DroolsParserException;
 import org.drools.conf.MBeansOption;
 import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
@@ -21,18 +19,24 @@ import org.drools.logger.KnowledgeRuntimeLoggerFactory;
 import org.drools.runtime.KnowledgeSessionConfiguration;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.conf.ClockTypeOption;
-
 import uk.ac.ncl.checker.DataChecker;
 import uk.ac.ncl.checker.DataCheckerImpl;
 import uk.ac.ncl.dao.UserManager;
 import uk.ac.ncl.dao.UserManagerImpl;
 import uk.ac.ncl.event.Event;
+import uk.ac.ncl.logging.CCCLogger;
 import uk.ac.ncl.response.CCCResponse;
 import uk.ac.ncl.rop.Obligation;
 import uk.ac.ncl.rop.Prohibition;
 import uk.ac.ncl.rop.Right;
 import uk.ac.ncl.user.User;
 import uk.ac.ncl.util.DateParser;
+
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.logging.Logger;
+
+import static uk.ac.ncl.user.User.setTimeKeeper;
 
 /**
  * The Class RelevanceEngine. Instances of this class are wrappers around the
@@ -61,6 +65,7 @@ public class RelevanceEngine {
 
     // default response is non contract compliant otherwise contract compliant
     private static CCCResponse cccResponse = new CCCResponse(false);
+    private static CCCLogger ccclog;
 
     /**
      * Handle compilation errors.
@@ -167,7 +172,7 @@ public class RelevanceEngine {
         eventLogger = el;
 
 		/*
-		 * 
+         *
 		 * Creates a file logger that executes in a different thread, where
 		 * information is written on given intervals (in milliseconds). Logs the
 		 * execution of the session for later inspection
@@ -192,9 +197,8 @@ public class RelevanceEngine {
 
     /**
      * Initialize contract.
-     *
      */
-    public static void initializeContract() {
+    public static void initializeContract(TimeKeeper timeKeeper) {
         if (workingMem != null) {
             workingMem.dispose();
         }
@@ -242,7 +246,7 @@ public class RelevanceEngine {
             workingMem.setGlobal("timingMonitor", tm);
         }
         // Pass the TimeKeeper instance to the ROPSet class
-        // ROPSet.setTimeKeeper(timeKeeper);
+        setTimeKeeper(timeKeeper);
         // Create the ROPSets for buyer and seller
         // ROPSet ropBuyer = new ROPSet(new RolePlayer("buyer"));
         // ROPSet ropSeller = new ROPSet(new RolePlayer("seller"));
@@ -294,7 +298,9 @@ public class RelevanceEngine {
 
         responder = new Responder(false);
         workingMem.setGlobal("responder", responder);
+        ccclog = new CCCLogger();
 
+        workingMem.setGlobal("cccloger", ccclog);
 
         log.info("Initialization complete");
     }
@@ -355,26 +361,24 @@ public class RelevanceEngine {
             Prohibition prohibition = userManager.getProhibition(user,
                     ev.getOperation());
 
-            System.out.println("user object: " + user.toString());
+           log.info("user object: " + user.toString());
 
             if (right != null) {
-                System.out.println("right object: " + right.toString());
+               log.info("right object: " + right.toString());
             }
 
             if (obligation != null) {
-                System.out.println("obligation object: " + obligation.toString());
+               log.info("obligation object: " + obligation.toString());
             }
 
             if (prohibition != null) {
-                System.out.println("prohibition object: " + prohibition.toString());
+               log.info("prohibition object: " + prohibition.toString());
             }
 
-            if (ev != null) {
-                System.out.println("event object: " + ev.toString());
-            }
+            log.info("event object: " + ev.toString());
 
             if (ev.getOperation() != null && ev.getOperation().getObject() != null) {
-                System.out.println("data: " + ev.getOperation().getObject());
+               log.info("data: " + ev.getOperation().getObject());
             }
 
             workingMem.insert(user);
@@ -388,13 +392,14 @@ public class RelevanceEngine {
                     "Insertion of new event in working memory failed", e);
             setCCCResponse(new CCCResponse(false));
         }
+
         log.info("+ Processing event: " + ev.toString());
+
         // Fire all rules!
         try {
 
             workingMem.fireAllRules();
             updateCCCResult();
-
 
         } catch (Exception e) {
             ErrorMessageManager.errorMsg("Exception when firing rules", e);
