@@ -1,22 +1,18 @@
 package uk.ac.ncl.user;
 
+import uk.ac.ncl.core.TimeKeeper;
+import uk.ac.ncl.rop.Obligation;
+import uk.ac.ncl.rop.Prohibition;
+import uk.ac.ncl.rop.Right;
+import uk.ac.ncl.rop.RopEntity;
+import uk.ac.ncl.state.RopState.ObligationState;
+import uk.ac.ncl.state.RopState.ProhibitionState;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import uk.ac.ncl.rop.*;
-import uk.ac.ncl.state.RopState.ObligationState;
-import uk.ac.ncl.state.RopState.ProhibitionState;
+import java.util.logging.Logger;
 
 @Entity
 @Table(name = "User")
@@ -26,6 +22,10 @@ public class User implements Serializable {
      *
      */
     private static final long serialVersionUID = 5455560211410987289L;
+
+    @Transient
+    private final static Logger log = Logger.getLogger(User.class
+            .toString());
 
     @Id
     @Column(name = "ID")
@@ -50,6 +50,9 @@ public class User implements Serializable {
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
     private Set<Prohibition> prohibitionSet;
 
+    @Transient
+    private static TimeKeeper timeKeeper;
+
     public User(String name, String password, String role, Set<Right> rightSet,
                 Set<Obligation> obligationSet, Set<Prohibition> prohibitionSet) {
         this.name = name;
@@ -62,6 +65,10 @@ public class User implements Serializable {
 
     public User() {
 
+    }
+
+    public static void setTimeKeeper(TimeKeeper timeKeeper) {
+        User.timeKeeper = timeKeeper;
     }
 
     public String getName() {
@@ -112,44 +119,56 @@ public class User implements Serializable {
         this.prohibitionSet = prohibitionSet;
     }
 
-    public boolean addRopEntity(RopEntity<?> entity) {
-        if (entity instanceof Right) {
-            Right right = (Right) entity;
-            return rightSet.add(right);
-        } else if (entity instanceof Obligation) {
-            Obligation obligation = (Obligation) entity;
-            if (obligationSet.contains(obligation)) {
-                for (Obligation result : obligationSet) {
-                    if (obligation.equals(result)) {
-                        if (result.getState() == ObligationState.fulfilled) {
-                            result.setState(ObligationState.imposed);
-                            return true;
-                        } else
-                            return false;
-                    }
-                }
-                return false;
-            } else
-                return obligationSet.add(obligation);
-        } else if (entity instanceof Prohibition) {
-            Prohibition prohibition = (Prohibition) entity;
-            if (prohibitionSet.contains(prohibition)) {
-                for (Prohibition result : prohibitionSet) {
-                    if (prohibition.equals(result)) {
-                        if (result.getState() == ProhibitionState.fulfilled) {
-                            result.setState(ProhibitionState.imposed);
-                            return true;
-                        } else
-                            return false;
-                    }
-                }
-                return false;
 
-            } else
-                return prohibitionSet.add(prohibition);
-        } else
-            return false;
+    public void addObligation(RopEntity<?> entity) {
+
+        log.info("add user obligation");
+
+        Obligation obligation = (Obligation) entity;
+        if (obligationSet.contains(obligation)) {
+
+            log.info("obligation set contains obligation");
+
+            for (Obligation result : obligationSet) {
+                if (obligation.equals(result)) {
+                    if (result.getState() == ObligationState.fulfilled) {
+                        result.setState(ObligationState.imposed);
+                        log.info("set Obligation state to imposed");
+                    }
+                }
+            }
+        } else {
+            log.info("add  obligation to timekeeper");
+            log.info("timekeeper: " + timeKeeper);
+            if (timeKeeper != null)
+                timeKeeper.addDeadline(obligation, obligation.getOperation(), this.getName(), entity.getDeadline());
+
+            obligationSet.add(obligation);
+        }
+
     }
+
+    public void addRight(RopEntity<?> entity) {
+        Right right = (Right) entity;
+        rightSet.add(right);
+
+    }
+
+    public void addProhibition(RopEntity<?> entity) {
+        Prohibition prohibition = (Prohibition) entity;
+        if (prohibitionSet.contains(prohibition)) {
+            for (Prohibition result : prohibitionSet) {
+                if (prohibition.equals(result)) {
+                    if (result.getState() == ProhibitionState.fulfilled) {
+                        result.setState(ProhibitionState.imposed);
+                    }
+                }
+            }
+
+        } else
+            prohibitionSet.add(prohibition);
+    }
+
 
     public boolean removeRopEntity(RopEntity<?> entity) {
         if (entity instanceof Right) {
