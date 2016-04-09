@@ -3,32 +3,20 @@ package uk.ac.ncl.rop;
 import uk.ac.ncl.event.Operation;
 import uk.ac.ncl.state.RopState;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.AttributeOverrides;
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.MappedSuperclass;
-
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class RopEntity<ropState extends RopState> implements Serializable {
-    /**
-     *
-     */
+
     private static final long serialVersionUID = -8495681371100274412L;
+
+    @Transient
+    private Operation operation;
 
     @Id
     @Column(name = "ID")
@@ -73,13 +61,15 @@ public class RopEntity<ropState extends RopState> implements Serializable {
         operationSet.add(operation);
         this.operationSet = operationSet;
         this.state = state;
+        this.operation = operation;
     }
 
-    public RopEntity(String name, Operation operation){
+    public RopEntity(String name, Operation operation) {
         this.name = name;
         Set<Operation> operationSet = new HashSet<Operation>();
         operationSet.add(operation);
         this.operationSet = operationSet;
+        this.operation = operation;
     }
 
     public RopEntity(Operation operation) {
@@ -87,6 +77,7 @@ public class RopEntity<ropState extends RopState> implements Serializable {
         Set<Operation> operationSet = new HashSet<Operation>();
         operationSet.add(operation);
         this.operationSet = operationSet;
+        this.operation = operation;
     }
 
     public String getName() {
@@ -115,6 +106,10 @@ public class RopEntity<ropState extends RopState> implements Serializable {
 
     public Set<Operation> getOperationSet() {
         return operationSet;
+    }
+
+    public Operation getOperation() {
+        return operation;
     }
 
     public void setOperationSet(Set<Operation> operationSet) {
