@@ -3,16 +3,11 @@
  */
 package uk.ac.ncl.core;
 
-import java.util.List;
-
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
-
 import org.jboss.logging.Logger;
-
 import uk.ac.ncl.event.Event;
 import uk.ac.ncl.response.CCCResponse;
+
+import java.util.List;
 
 /**
  * The Class ContractComplianceChecker.
@@ -24,8 +19,10 @@ public class ContractComplianceChecker {
     private final static Logger log = Logger.getLogger(ContractComplianceChecker.class.toString());
 
     private static Boolean startFlag = false;
-    /** The time keeper. */
-    // private TimeKeeper timeKeeper = null;
+    /**
+     * The time keeper.
+     */
+    private TimeKeeper timeKeeper = null;
 
     /**
      * The relevance engine.
@@ -56,6 +53,11 @@ public class ContractComplianceChecker {
             ErrorMessageManager.fatalErrorMsg(
                     "Failed to initalize Relevance Engine", e);
         }
+        try {
+            timeKeeper = new TimeKeeper(relevanceEngine, logger);
+        } catch (Exception e) {
+            ErrorMessageManager.fatalErrorMsg("Failed to initalize Time Keeper", e);
+        }
     }
 
     /**
@@ -84,7 +86,7 @@ public class ContractComplianceChecker {
     public void initializeCCC() {
 
         // Have the Relevance Engine do all the initialization bits
-        RelevanceEngine.initializeContract();
+        relevanceEngine.initializeContract(timeKeeper);
         // Init event created and submitted
         //Event event = new Event();
         // logger.logEvent(event);
