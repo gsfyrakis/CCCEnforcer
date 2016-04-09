@@ -1,21 +1,8 @@
 package uk.ac.ncl.event;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 
 /**
@@ -54,9 +41,6 @@ public class Event implements Serializable {
     @Column(name = "STATUS")
     private EventStatus status = EventStatus.unChecked;
 
-    public Event(String sequenceId, String originator, String responder, String name, String timeout, Date date) {
-
-    }
 
     public Event(String username, Operation operation) {
         super();
@@ -119,20 +103,13 @@ public class Event implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("BusinessEvent [");
-        if (id != null)
-            builder.append("id=").append(id).append(", ");
-        if (username != null)
-            builder.append("user=").append(username).append(", ");
-        if (operation != null)
-            builder.append("operation=").append(operation).append(", ");
-        if (status != null)
-            builder.append("status=").append(status).append(", ");
-        if (timestamp != null)
-            builder.append("timestamp=").append(timestamp);
-        builder.append("]");
-        return builder.toString();
+        return "uk.ac.ncl.event.Event{" +
+                "serialVersionUID=" + serialVersionUID +
+                ", id=" + id +
+                ", username='" + username + '\'' +
+                ", operation=" + operation +
+                ", timestamp=" + timestamp +
+                ", status=" + status +
+                '}';
     }
-
 }
