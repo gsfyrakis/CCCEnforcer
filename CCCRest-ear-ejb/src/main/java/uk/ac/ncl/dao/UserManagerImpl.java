@@ -84,27 +84,6 @@ public class UserManagerImpl implements UserManager {
     }
 
 
-    public void addObligation(User user, Operation operation, String d) throws ParseException {
-        Date deadline = null;
-        if (d != null) {
-            deadline = DateParser.parse(d);
-        }
-
-        //remove obligation if that is present
-        //removeObligation(user, operation)
-
-        Obligation ob = new Obligation(operation, deadline);
-
-        //Notify Timekeeper if this obligation has a deadline
-        Set<Obligation> userObligation = user.getObligationSet();
-        userObligation.add(ob);
-        if (timeKeeper != null)
-            timeKeeper.addDeadline(ob, operation, user.getName(), deadline );
-
-    }
-
-
-
     @Override
     public Prohibition getProhibition(User user, Operation operation) {
         Set<Prohibition> userProhibition = user.getProhibitionSet();
