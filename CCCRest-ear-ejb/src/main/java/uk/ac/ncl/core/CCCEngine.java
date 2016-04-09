@@ -31,9 +31,6 @@ public class CCCEngine {
 
     // private List<Event> events = new ArrayList<Event>();
 
-    /**
-     * @see MessageListener#onMessage(Message)
-     */
     public CCCResponse run(Event event) {
 
         try {
@@ -50,7 +47,7 @@ public class CCCEngine {
 //			if (!ccc.cccStarted()) {
 				ccc.initializeCCC();
 //			}
-
+            log.info(event.toString());
 
             cccResponse = processCCCEvent(event);
 
