@@ -31,12 +31,18 @@ import uk.ac.ncl.rop.Prohibition;
 import uk.ac.ncl.rop.Right;
 import uk.ac.ncl.user.User;
 import uk.ac.ncl.util.DateParser;
+import uk.ac.ncl.util.EventMarshaller;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import static uk.ac.ncl.user.User.setTimeKeeper;
+import static uk.ac.ncl.util.EventMarshaller.*;
 
 /**
  * The Class RelevanceEngine. Instances of this class are wrappers around the
@@ -207,94 +213,18 @@ public class RelevanceEngine {
         // Pass global objects to the working memory
         // workingMem.setGlobal("engine", this);
         workingMem.setGlobal("logger", eventLogger);
-        // TODO: Doing this manually here now, but a proper loader needs to
-        // be
-        // written!
-
-        // BusinessOperation buyAcceptance = new
-        // BusinessOperation("Buy Acceptance");
-
-        // BusinessOperation finePayment = new
-        // BusinessOperation("Fine Payment");
-
-        // BusinessOperation buyRequest = new
-        // BusinessOperation("Buy Request");
-        // BusinessOperation buyReject = new
-        // BusinessOperation("Buy Request Rejection");
-        // BusinessOperation buyConfirm = new
-        // BusinessOperation("Buy Confirmation");
-        // BusinessOperation payment = new BusinessOperation("Payment");
-        // BusinessOperation cancelation = new
-        // BusinessOperation("Cancelation");
-        // ProjectManager pm = new ProjectManagerImpl();
         DateParser dateParser = new DateParser();
 
-        // BusinessOperation poAcceptance = new
-        // BusinessOperation("Purchase Order Acceptance");
-        // BusinessOperation poRejection = new
-        // BusinessOperation("Purchase Order Acceptance");
-        // BusinessOperation goodsDelivery = new
-        // BusinessOperation("Goods Delivery");
-        // BusinessOperation anyOperation = new
-        // BusinessOperation("Any Operation");
-        // RolePlayer buyer = new RolePlayer("buyer");
-        // RolePlayer seller = new RolePlayer("seller");
-        // RolePlayer player = new RolePlayer("player");
-        // Create and pass the timing monitor
         if (performanceTestingOn) {
             TimingMonitor tm = new TimingMonitor();
             workingMem.setGlobal("timingMonitor", tm);
         }
         // Pass the TimeKeeper instance to the ROPSet class
         setTimeKeeper(timeKeeper);
-        // Create the ROPSets for buyer and seller
-        // ROPSet ropBuyer = new ROPSet(new RolePlayer("buyer"));
-        // ROPSet ropSeller = new ROPSet(new RolePlayer("seller"));
-
-        // Boolean buyReqBF = false;
-
-        // Boolean buyRejBF = false;
-        // Boolean buyConfBF = false;
-        // Boolean buyPayBF = false;
-        // Boolean buyCancBF = false;
-        // // ROPSet ropPlayer = new ROPSet(player);
-        // // Add all the globals to the working memory
-        //
-        // workingMem.setGlobal("buyReqBF", buyReqBF);
-        // workingMem.setGlobal("buyConfBF", buyConfBF);
-        // workingMem.setGlobal("buyPayBF", buyPayBF);
-        // workingMem.setGlobal("buyCancBF", buyCancBF);
-        // workingMem.setGlobal("buyRejBF", buyRejBF);
-
-		/*
-		 * commented by john workingMem.setGlobal("buyer", buyer);
-		 * workingMem.setGlobal("seller", seller);
-		 * workingMem.setGlobal("ropBuyer", ropBuyer);
-		 * workingMem.setGlobal("ropSeller", ropSeller);
-		 * workingMem.setGlobal("buyRequest", buyRequest);
-		 * workingMem.setGlobal("payment", payment);
-		 * workingMem.setGlobal("buyReject", buyReject);
-		 * workingMem.setGlobal("buyConfirm", buyConfirm);
-		 * workingMem.setGlobal("cancelation", cancelation);
-		 */
         DataChecker dataChecker = new DataCheckerImpl();
         workingMem.setGlobal("dataChecker", dataChecker);
         workingMem.setGlobal("dateParser", dateParser);
 
-        // workingMem.setGlobal("pm", pm);
-
-        // workingMem.setGlobal("cccResponse", cccResponse);
-
-        // workingMem.setGlobal("payment", payment);
-        // workingMem.setGlobal("poAcceptance", poAcceptance);
-        // workingMem.setGlobal("poRejection", poRejection);
-        // workingMem.setGlobal("goodsDelivery", goodsDelivery);
-
-        // Load globals for performance testing
-        // workingMem.setGlobal("player", player);
-        // workingMem.setGlobal("ropPlayer", ropPlayer);
-        // workingMem.setGlobal("anyOperation", anyOperation);
-        // Complete
 
         responder = new Responder(false);
         workingMem.setGlobal("responder", responder);
@@ -314,6 +244,11 @@ public class RelevanceEngine {
      */
     public void addEvent(Event e) {
         log.info("- Adding new event to queue");
+        try {
+            EventMarshaller.marshalEvent(e);
+        } catch (JAXBException e1) {
+            e1.printStackTrace();
+        }
         eventQueue.offer(e);
         // TODO: Change this, the queue should be watched by an
         // Observer that calls the method below, so as to
@@ -321,6 +256,7 @@ public class RelevanceEngine {
         processEventQueue();
 
     }
+
 
     /**
      * Checks if is queue empty.
@@ -351,7 +287,6 @@ public class RelevanceEngine {
         // It is not empty, process event.
 
         try {
-
             // Insert new event in working memory
             UserManager userManager = new UserManagerImpl();
             User user = userManager.query(ev.getUsername());
@@ -361,24 +296,24 @@ public class RelevanceEngine {
             Prohibition prohibition = userManager.getProhibition(user,
                     ev.getOperation());
 
-           log.info("user object: " + user.toString());
+            log.info("user object: " + user.toString());
 
             if (right != null) {
-               log.info("right object: " + right.toString());
+                log.info("right object: " + right.toString());
             }
 
             if (obligation != null) {
-               log.info("obligation object: " + obligation.toString());
+                log.info("obligation object: " + obligation.toString());
             }
 
             if (prohibition != null) {
-               log.info("prohibition object: " + prohibition.toString());
+                log.info("prohibition object: " + prohibition.toString());
             }
 
             log.info("event object: " + ev.toString());
 
             if (ev.getOperation() != null && ev.getOperation().getObject() != null) {
-               log.info("data: " + ev.getOperation().getObject());
+                log.info("data: " + ev.getOperation().getObject());
             }
 
             workingMem.insert(user);
@@ -410,6 +345,7 @@ public class RelevanceEngine {
     }
 
     private static void updateCCCResult() {
+        log.info("updateCCCResult -> cccresponse: " + responder.getContractCompliant());
         // update response of CCC
         if (responder != null) {
             if (responder.getContractCompliant() == null) {
@@ -417,6 +353,12 @@ public class RelevanceEngine {
             } else {
                 setCCCResponse(new CCCResponse(responder.getContractCompliant()));
                 cccResponse.setMessage(responder.getMessage());
+            }
+
+            try {
+                marshalCCCResponse(getCCCResponse());
+            } catch (JAXBException e) {
+                e.printStackTrace();
             }
         }
     }

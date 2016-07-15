@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<event>
+    <operation>
+        <name>addDependency</name>
+        <object>uk/ac/ncl/ReseachDataRepository/artofscientificinvestigation60beve.pdf</object>
+        <type>data</type>
+    </operation>
+    <status>succeed</status>
+    <timestamp>2016-04-21T13:55:00+01:00</timestamp>
+    <username>alpac</username>
+</event>
