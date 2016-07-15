@@ -1,7 +1,10 @@
 package uk.ac.ncl.response;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
+@XmlRootElement
 public class CCCResponse implements Serializable {
 
     private static final long serialVersionUID = 2989890107617783379L;
@@ -19,6 +22,7 @@ public class CCCResponse implements Serializable {
 
     }
 
+    @XmlElement
     public boolean getContractCompliant() {
         return isContractCompliant;
     }
@@ -29,12 +33,13 @@ public class CCCResponse implements Serializable {
 
     @Override
     public String toString() {
-        return  "<result>\n" +
-                "<contractcompliant>" + isContractCompliant +"</contractcompliant>\n" +
-                "<message>" + message + "</message>\n"+
+        return "<result>\n" +
+                "<contractcompliant>" + isContractCompliant + "</contractcompliant>\n" +
+                "<message>" + message + "</message>\n" +
                 " </result>";
     }
 
+    @XmlElement
     public String getMessage() {
         return message;
     }

@@ -49,9 +49,9 @@ public class TimeKeeper {
     /**
      * Adds the deadline.
      *
-     * @param rop        the rop
+     * @param rop  the rop
      * @param user the user
-     * @param dl         the dl
+     * @param dl   the dl
      */
     public void addDeadline(RopEntity rop, Operation operation, String user, Date dl) {
         // Verify that arguments are acceptable
@@ -106,36 +106,39 @@ public class TimeKeeper {
         return true;
     }
 
+    private CCCEngine engine;
 
     /**
      * Deadline callback.
      * Callback method, called when a deadline expires.
      *
-     * @param rop        the rop
-     * @param user the originator
-     * @param responder  the responder
-     * @param isExpiry   the is expiry
+     * @param rop       the rop
+     * @param user      the originator
+     * @param responder the responder
+     * @param isExpiry  the is expiry
      */
     public void deadlineCallback(RopEntity rop, String user, String responder, boolean isExpiry) {
-        // Create deadline event, differentiating between timeouts and expiries
+        // Create deadline event, differentiating between timeouts and expires
         String name = new String(rop.getName());
+
         if (isExpiry) {
             name = name.concat(" Expiry");
         } else {
             name = name.concat(" Timeout");
         }
 
-        log.info("----Deadline callback--- ");
+        log.info("----Deadline callback begin--- ");
         log.info("callback(rop): " + rop);
         log.info("callback(user): " + user);
         log.info("callback(responder): " + responder);
         log.info("callback(isExpiry): " + isExpiry);
-        log.info("-----Deadline callback----");
+        log.info("-----Deadline callback end----");
 
         Event ev = new Event(user, rop.getOperation(), EventStatus.succeed, rop.getDeadline());
 
-        log.info("Deadline callback: " + ev);
+        log.info("Deadline callback event: " + ev);
 
+//        engine.run(ev);
         // Pump the event in the queue and log it
         logger.logEvent(ev);
         relevanceEngine.addEvent(ev);

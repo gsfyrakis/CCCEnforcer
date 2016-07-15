@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<event>
+    <id>1</id>
+    <operation>
+        <name>register</name>
+    </operation>
+    <status>succeed</status>
+    <username>alpac</username>
+</event>

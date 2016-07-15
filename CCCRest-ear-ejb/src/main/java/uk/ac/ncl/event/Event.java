@@ -1,6 +1,8 @@
 package uk.ac.ncl.event;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -10,6 +12,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "Eventhistory")
+@XmlRootElement(name = "event")
 public class Event implements Serializable {
 
     /**
@@ -41,6 +44,7 @@ public class Event implements Serializable {
     @Column(name = "STATUS")
     private EventStatus status = EventStatus.unChecked;
 
+    public Event() {}
 
     public Event(String username, Operation operation) {
         super();
@@ -65,10 +69,11 @@ public class Event implements Serializable {
         this.timestamp = timestamp;
     }
 
+    @XmlElement
     public Long getId() {
         return id;
     }
-
+    @XmlElement
     public String getUsername() {
         return username;
     }
@@ -76,7 +81,7 @@ public class Event implements Serializable {
     public void setUsername(String username) {
         this.username = username;
     }
-
+    @XmlElement
     public Operation getOperation() {
         return operation;
     }
@@ -84,7 +89,7 @@ public class Event implements Serializable {
     public void setOperation(Operation operation) {
         this.operation = operation;
     }
-
+    @XmlElement
     public Date getTimestamp() {
         return timestamp;
     }
@@ -92,7 +97,7 @@ public class Event implements Serializable {
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
-
+    @XmlElement
     public EventStatus getStatus() {
         return status;
     }

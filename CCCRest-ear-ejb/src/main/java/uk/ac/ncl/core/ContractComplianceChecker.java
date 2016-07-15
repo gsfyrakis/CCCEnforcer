@@ -157,6 +157,7 @@ public class ContractComplianceChecker {
         } else {
             logger.logEvent(event);
             relevanceEngine.addEvent(event);
+
             return RelevanceEngine.getCCCResponse();
 
         }
