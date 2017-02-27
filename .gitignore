@@ -17,3 +17,13 @@ jboss/server/minimal/work/**/*
 # deployed package files #
 
 *.DEPLOYED
+/.idea
+/CCCRest-ear-ccc/CCCRest-ear-ccc.iml
+/CCCRest-ear-ccc/target
+/CCCRest-ear-ear/CCCRest-ear-ear.iml
+/CCCRest-ear-ear/target
+/CCCRest-ear-ejb/CCCRest-ear-ejb.iml
+/CCCRest-ear-ejb/target
+/CCCRest-ear-web/CCCRest-ear-web.iml
+/CCCRest-ear-web/target
+/CCCRest-ear.iml
