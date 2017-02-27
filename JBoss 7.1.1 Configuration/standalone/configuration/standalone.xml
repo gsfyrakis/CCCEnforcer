@@ -93,20 +93,12 @@
         <subsystem xmlns="urn:jboss:domain:configadmin:1.0"/>
         <subsystem xmlns="urn:jboss:domain:datasources:1.0">
             <datasources>
-                <xa-datasource jta="true" jndi-name="java:jboss/datasources/RopeDS" pool-name="RopeDS" enabled="true"
-                               use-ccm="false">
-                    <xa-datasource-property name="URL">
-
-                    </xa-datasource-property>
+                 <datasource jta="false" jndi-name="java:jboss/datasources/RopeDS" pool-name="RopeDS" enabled="true" use-ccm="false">
+                    <connection-url>jdbc:mysql://127.0.0.1:3306/rope_historical</connection-url>
+                    <driver-class>com.mysql.jdbc.Driver</driver-class>
                     <driver>mysql</driver>
-                    <xa-pool>
-                        <min-pool-size>5</min-pool-size>
-                        <max-pool-size>20</max-pool-size>
-                        <prefill>true</prefill>
-                        <use-strict-min>false</use-strict-min>
-                        <flush-strategy>FailingConnectionOnly</flush-strategy>
-                    </xa-pool>
                     <security>
+                    <!-- add username password for accessing rope_historical database -->
                         <user-name></user-name>
                         <password></password>
                     </security>
@@ -117,10 +109,11 @@
                     <statement>
                         <share-prepared-statements>false</share-prepared-statements>
                     </statement>
-                </xa-datasource>
+                </datasource>
                 <drivers>
-                    <driver name="mysql" module="com.mysql">
-                        <xa-datasource-class>com.mysql.jdbc.jdbc2.optional.MysqlXADataSource</xa-datasource-class>
+                    <driver name="mysql" module="com.mysql"/>
+                    <driver name="h2" module="com.h2database.h2">
+                        <xa-datasource-class>org.h2.jdbcx.JdbcDataSource</xa-datasource-class>
                     </driver>
                 </drivers>
             </datasources>
@@ -139,10 +132,8 @@
             </session-bean>
             <pools>
                 <bean-instance-pools>
-                    <strict-max-pool name="slsb-strict-max-pool" max-pool-size="20" instance-acquisition-timeout="5"
-                                     instance-acquisition-timeout-unit="MINUTES"/>
-                    <strict-max-pool name="mdb-strict-max-pool" max-pool-size="20" instance-acquisition-timeout="5"
-                                     instance-acquisition-timeout-unit="MINUTES"/>
+                    <strict-max-pool name="slsb-strict-max-pool" max-pool-size="20" instance-acquisition-timeout="5" instance-acquisition-timeout-unit="MINUTES"/>
+                    <strict-max-pool name="mdb-strict-max-pool" max-pool-size="20" instance-acquisition-timeout="5" instance-acquisition-timeout-unit="MINUTES"/>
                 </bean-instance-pools>
             </pools>
             <caches>
@@ -245,10 +236,8 @@
                             <module-option name="password-stacking" value="useFirstPass"/>
                         </login-module>
                         <login-module code="RealmUsersRoles" flag="required">
-                            <module-option name="usersProperties"
-                                           value="${jboss.server.config.dir}/application-users.properties"/>
-                            <module-option name="rolesProperties"
-                                           value="${jboss.server.config.dir}/application-roles.properties"/>
+                            <module-option name="usersProperties" value="${jboss.server.config.dir}/application-users.properties"/>
+                            <module-option name="rolesProperties" value="${jboss.server.config.dir}/application-roles.properties"/>
                             <module-option name="realm" value="ApplicationRealm"/>
                             <module-option name="password-stacking" value="useFirstPass"/>
                         </login-module>
@@ -288,8 +277,7 @@
             <wsdl-host>${jboss.bind.address:127.0.0.1}</wsdl-host>
             <endpoint-config name="Standard-Endpoint-Config"/>
             <endpoint-config name="Recording-Endpoint-Config">
-                <pre-handler-chain name="recording-handlers"
-                                   protocol-bindings="##SOAP11_HTTP ##SOAP11_HTTP_MTOM ##SOAP12_HTTP ##SOAP12_HTTP_MTOM">
+                <pre-handler-chain name="recording-handlers" protocol-bindings="##SOAP11_HTTP ##SOAP11_HTTP_MTOM ##SOAP12_HTTP ##SOAP12_HTTP_MTOM">
                     <handler name="RecordingHandler" class="org.jboss.ws.common.invocation.RecordingServerHandler"/>
                 </pre-handler-chain>
             </endpoint-config>
@@ -309,8 +297,7 @@
         </interface>
     </interfaces>
 
-    <socket-binding-group name="standard-sockets" default-interface="public"
-                          port-offset="${jboss.socket.binding.port-offset:0}">
+    <socket-binding-group name="standard-sockets" default-interface="public" port-offset="${jboss.socket.binding.port-offset:0}">
         <socket-binding name="management-native" interface="management" port="${jboss.management.native.port:9999}"/>
         <socket-binding name="management-http" interface="management" port="${jboss.management.http.port:9990}"/>
         <socket-binding name="management-https" interface="management" port="${jboss.management.https.port:9443}"/>
@@ -328,7 +315,7 @@
 
     <deployments>
         <deployment name="CCCRest-ear.ear" runtime-name="CCCRest-ear.ear">
-            <content sha1="bef583a444ae478b76a02b31ebed400ae2f57f42"/>
+            <content sha1="655acd4728948ffaf3017a031c1f79b12c0837cc"/>
         </deployment>
     </deployments>
 </server>
